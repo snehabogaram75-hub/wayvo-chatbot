@@ -173,11 +173,13 @@ Keep answers concise unless the user asks for details."""
             "response": assistant_message
         })
 
-    except Exception as e:
-    return jsonify({
-        "success": False,
-        "message": "WAYVO could not connect to the AI service."
-    }), 500
+       except Exception as e:
+        print("GEMINI ERROR:", repr(e))
+        return jsonify({
+            "success": False,
+            "message": "WAYVO could not connect to the AI service."
+        }), 500
+
 
 
 if __name__ == "__main__":
