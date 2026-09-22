@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#fff4df"/>
+      <stop offset="100%" stop-color="#e8cdb8"/>
+    </radialGradient>
+    <linearGradient id="hat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#b84b3d"/>
+      <stop offset="100%" stop-color="#7f2f29"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="150" cy="150" r="150" fill="url(#bg)"/>
+
+  <!-- Santa hat -->
+  <path d="M78 112 Q105 28 192 48 Q220 54 231 78
+           Q194 65 168 91 Q145 112 136 128 Z"
+        fill="url(#hat)"/>
+
+  <circle cx="207" cy="52" r="18" fill="#fffaf0"/>
+
+  <!-- Hat band -->
+  <path d="M73 108 Q125 126 177 103 Q194 96 211 102
+           L216 123 Q157 145 83 126 Z"
+        fill="#fffaf0"/>
+
+  <!-- Face -->
+  <ellipse cx="150" cy="153" rx="73" ry="72" fill="#e6ad82"/>
+
+  <!-- Ears -->
+  <circle cx="78" cy="157" r="17" fill="#d99a70"/>
+  <circle cx="222" cy="157" r="17" fill="#d99a70"/>
+
+  <!-- Eyes -->
+  <ellipse cx="123" cy="145" rx="6" ry="8" fill="#49352d"/>
+  <ellipse cx="177" cy="145" rx="6" ry="8" fill="#49352d"/>
+
+  <!-- Nose -->
+  <ellipse cx="150" cy="163" rx="13" ry="11" fill="#c98262"/>
+
+  <!-- Beard -->
+  <path d="M87 177
+           Q102 238 150 246
+           Q198 238 213 177
+           Q193 195 177 187
+           Q164 210 150 194
+           Q136 210 123 187
+           Q107 195 87 177 Z"
+        fill="#fffaf0"/>
+
+  <!-- Mustache -->
+  <path d="M150 178
+           Q132 163 117 178
+           Q133 193 150 181
+           Q167 193 183 178
+           Q168 163 150 178 Z"
+        fill="#fffaf0"/>
+
+  <!-- Smile -->
+  <path d="M137 187 Q150 194 163 187"
+        fill="none"
+        stroke="#8c4d3d"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <!-- Coat -->
+  <path d="M82 246 Q150 218 218 246 L235 300
+           L65 300 Z"
+        fill="#9e493b"/>
+
+  <!-- Coat trim -->
+  <path d="M65 285 Q150 260 235 285 L240 300
+           L60 300 Z"
+        fill="#fffaf0"/>
+</svg>

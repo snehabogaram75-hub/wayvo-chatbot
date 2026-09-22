@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAYVO</title>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Georgia, "Times New Roman", serif;
+    background: linear-gradient(145deg, #f4eadc, #ead7c5, #f6ede1);
+    color: #46352b;
+}
+
+.login-card {
+    width: 92%;
+    max-width: 430px;
+    padding: 48px 36px;
+    background: #fffdfa;
+    border-radius: 30px;
+    border: 1px solid #e0cfc0;
+    box-shadow: 0 25px 70px rgba(80, 50, 30, 0.18);
+    text-align: center;
+}
+
+h1 {
+    font-size: 38px;
+    letter-spacing: 6px;
+    color: #4b3026;
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #9a6850;
+    margin-bottom: 32px;
+}
+
+.input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    border: 1px solid #dbc8b7;
+    border-radius: 14px;
+    background: #fffdfa;
+    font-size: 15px;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #b56b4d;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #a6533e;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #8f4433;
+}
+
+.signup-btn {
+    margin-top: 12px;
+    background: transparent;
+    color: #a6533e;
+    border: 1px solid #d5b5a3;
+}
+
+.message {
+    margin-top: 18px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #8f4433;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <h1>WAYVO</h1>
+
+    <p class="tagline">Instant answers. Zero hassle.</p>
+
+    <input class="input" id="email" type="email" placeholder="Email">
+
+    <input class="input" id="password" type="password" placeholder="Password">
+
+    <button class="btn" onclick="login()">Enter WAYVO</button>
+
+    <button class="btn signup-btn" onclick="signup()">Create Account</button>
+
+    <p class="message" id="message"></p>
+
+</div>
+
+<script>
+async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
+
+    if (!email || !password) {
+        message.textContent = "Please enter your email and password.";
+        return;
+    }
+
+    const response = await fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, password})
+    });
+
+    const data = await response.json();
+    message.textContent = data.message;
+
+    if (data.success) {
+        window.location.href = "/chat-page";
+    }
+}
+
+async function signup() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
+
+    if (!email || !password) {
+        message.textContent = "Please enter an email and password.";
+        return;
+    }
+
+    const response = await fetch("/signup", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, password})
+    });
+
+    const data = await response.json();
+    message.textContent = data.message;
+}
+</script>
+
+</body>
+</html>

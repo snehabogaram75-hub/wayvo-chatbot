@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAYVO Chat</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #f4eadc;
+    color: #46352b;
+}
+
+.header {
+    padding: 20px 30px;
+    background: #fffdfa;
+    border-bottom: 1px solid #e0cfc0;
+}
+
+.logo {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    letter-spacing: 4px;
+    font-weight: bold;
+}
+
+.chat-container {
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.messages {
+    min-height: 65vh;
+    background: #fffdfa;
+    border-radius: 20px;
+    padding: 25px;
+    overflow-y: auto;
+    box-shadow: 0 10px 35px rgba(80, 50, 30, 0.10);
+}
+
+.message {
+    margin-bottom: 18px;
+    padding: 13px 16px;
+    border-radius: 15px;
+    max-width: 75%;
+    line-height: 1.5;
+}
+
+.user {
+    margin-left: auto;
+    background: #a6533e;
+    color: white;
+}
+
+.bot {
+    background: #eee1d4;
+    color: #46352b;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #dbc8b7;
+    border-radius: 14px;
+    font-size: 15px;
+    outline: none;
+}
+
+.send-btn {
+    padding: 15px 24px;
+    border: none;
+    border-radius: 14px;
+    background: #a6533e;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo">WAYVO</div>
+</div>
+
+<div class="chat-container">
+
+    <div class="messages" id="messages">
+        <div class="message bot">
+            Hi! I'm WAYVO. How can I help you?
+        </div>
+    </div>
+
+    <div class="input-area">
+
+        <input
+            id="messageInput"
+            type="text"
+            placeholder="Ask WAYVO anything..."
+        >
+
+        <button class="send-btn" onclick="sendMessage()">
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+async function sendMessage() {
+
+    const input = document.getElementById("messageInput");
+    const messages = document.getElementById("messages");
+
+    const text = input.value.trim();
+
+    if (!text) {
+        return;
+    }
+
+    const userMessage = document.createElement("div");
+    userMessage.className = "message user";
+    userMessage.textContent = text;
+
+    messages.appendChild(userMessage);
+
+    input.value = "";
+
+    const response = await fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: text
+        })
+    });
+
+    const data = await response.json();
+
+    const botMessage = document.createElement("div");
+    botMessage.className = "message bot";
+    botMessage.textContent = data.response || data.message;
+
+    messages.appendChild(botMessage);
+
+    messages.scrollTop = messages.scrollHeight;
+}
+
+document.getElementById("messageInput").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+</script>
+
+</body>
+</html>
