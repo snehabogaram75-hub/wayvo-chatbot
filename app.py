@@ -1,19 +1,42 @@
 from flask import Flask, render_template, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
-import ollama
+import os
+from google import genai
 
 app = Flask(__name__)
 
-app.secret_key = "wayvo-secret-key-change-later"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 DATABASE = "wayvo.db"
+
+gemini_client = genai.Client(
+    api_key=os.environ.get("GEMINI_API_KEY")
+)
 
 
 def get_db():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def init_db():
+    conn = get_db()
+
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+init_db()
 
 
 @app.route("/")
@@ -29,10 +52,16 @@ def signup():
     password = data.get("password", "")
 
     if not email or not password:
-        return jsonify({"success": False, "message": "Email and password are required."})
+        return jsonify({
+            "success": False,
+            "message": "Email and password are required."
+        })
 
     if len(password) < 6:
-        return jsonify({"success": False, "message": "Password must be at least 6 characters."})
+        return jsonify({
+            "success": False,
+            "message": "Password must be at least 6 characters."
+        })
 
     conn = get_db()
 
@@ -43,7 +72,10 @@ def signup():
 
     if existing_user:
         conn.close()
-        return jsonify({"success": False, "message": "Account already exists."})
+        return jsonify({
+            "success": False,
+            "message": "Account already exists."
+        })
 
     hashed_password = generate_password_hash(password)
 
@@ -102,6 +134,7 @@ def login():
 def chat_page():
     if "user_id" not in session:
         return render_template("index.html")
+
     return render_template("chat.html")
 
 
@@ -113,33 +146,38 @@ def chat():
             "message": "Please login first."
         }), 401
 
-    user_message = request.json["message"]
+    user_message = request.json.get("message", "").strip()
 
-    messages = [
-        {
-            "role": "system",
-            "content": """You are WAYVO, a friendly, helpful, and natural AI assistant.
+    if not user_message:
+        return jsonify({
+            "success": False,
+            "message": "Please enter a message."
+        })
+
+    try:
+        response = gemini_client.models.generate_content(
+            model="gemini-3.8-flash",
+            contents=user_message,
+            config={
+                "system_instruction": """You are WAYVO, a friendly, helpful, and natural AI assistant.
 Speak in simple, clear language.
 Be conversational and warm, not robotic.
 Keep answers concise unless the user asks for details."""
-        },
-        {
-            "role": "user",
-            "content": user_message
-        }
-    ]
+            }
+        )
 
-    response = ollama.chat(
-        model="llama3.2",
-        messages=messages
-    )
+        assistant_message = response.text
 
-    assistant_message = response["message"]["content"]
+        return jsonify({
+            "success": True,
+            "response": assistant_message
+        })
 
-    return jsonify({
-        "success": True,
-        "response": assistant_message
-    })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": "WAYVO could not connect to the AI service."
+        }), 500
 
 
 if __name__ == "__main__":
